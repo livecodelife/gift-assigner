@@ -1,0 +1,14 @@
+<% if @assignments %>
+  <h1>Here are your assigned family members!</h1>
+  <ul>
+    <% @assignments.each do |assignment| %>
+      <li><%= assignment.person %></li>
+    <% end %>
+  </ul>
+<% else %>
+  <%= form_with(url: "/assignments", method: "post") do %>
+    <%= label_tag(:name, "Enter your name") %>
+    <%= text_field_tag(:name) %>
+    <%= submit_tag("Get assignments") %>
+  <% end %>
+<% end %>
