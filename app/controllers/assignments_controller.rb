@@ -15,6 +15,7 @@ class AssignmentsController < ApplicationController
       @assignments.flatten!
 
       family.complete
+      @assignments.each {|assignment| assignment.activate}
     else
       redirect_to :root, alert: "Your family has already received it's assignments" and return
     end

@@ -5,4 +5,8 @@ class Assignment < ApplicationRecord
   scope :only_adults, -> { where("age = ?", "adult") }
 
   belongs_to :family
+
+  def activate
+    self.update(active: true)
+  end
 end
