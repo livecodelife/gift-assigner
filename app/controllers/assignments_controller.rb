@@ -10,12 +10,7 @@ class AssignmentsController < ApplicationController
     family = assignment.family
 
     if (!family.completed)
-      @assignments = Assignment.not_in_family(family).unassigned.only_children.shuffle.take(2)
-      @assignments << Assignment.not_in_family(family).unassigned.only_adults.shuffle.take(2)
-      @assignments.flatten!
-
-      family.complete
-      @assignments.each {|assignment| assignment.activate}
+      @assignments = Assignment.find_assignments(family)
     else
       redirect_to :root, alert: "Your family has already received it's assignments" and return
     end

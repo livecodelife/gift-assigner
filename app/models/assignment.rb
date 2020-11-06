@@ -9,4 +9,34 @@ class Assignment < ApplicationRecord
   def activate
     self.update(active: true)
   end
+
+
+  def self.find_assignments(family)
+    assignments = []
+    families_left = Family.incomplete.where.not(id: family.id)
+    if families_left.length == 1
+      assignments << self.where(family_id: families_left.first.id).unassigned
+      assignments.flatten!
+      assignments.each {|assignment| assignment.activate}
+    end
+
+    kids_needed = 2 - filter_age(assignments, 'child').length
+    adults_needed = 2 - filter_age(assignments, 'adult').length
+
+    unnasigned = self.not_in_family(family).unassigned
+    assignments << unassigned.only_children.shuffle.take(kids_needed)
+    assignments << unassigned.only_adults.shuffle.take(adults_needed)
+    assignments.flatten!
+      
+
+    family.complete
+    assignments.each {|assignment| assignment.activate}
+
+    return assignments
+  end
+
+  private
+    def self.filter_age(assignments, age)
+      assignments.filter {|assignment| assignment.age == age} 
+    end
 end
