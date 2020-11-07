@@ -23,8 +23,9 @@ class Assignment < ApplicationRecord
     kids_needed = 2 - assignments.filter {|assignment| assignment.age == 'child'}.length
     adults_needed = 2 - assignments.filter {|assignment| assignment.age == 'adult'}.length
 
-    assignments << self.not_in_family(family).unassigned.only_children.shuffle.take(kids_needed)
-    assignments << self.not_in_family(family).unassigned.only_adults.shuffle.take(adults_needed)
+
+    assignments << not_in_family(family).unassigned.only_children.shuffle.take(kids_needed)
+    assignments << not_in_family(family).unassigned.only_adults.shuffle.take(adults_needed)
     assignments.flatten!
       
 
