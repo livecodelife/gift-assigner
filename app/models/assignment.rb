@@ -20,12 +20,11 @@ class Assignment < ApplicationRecord
       assignments.each {|assignment| assignment.activate}
     end
 
-    kids_needed = 2 - filter_age(assignments, 'child').length
-    adults_needed = 2 - filter_age(assignments, 'adult').length
+    kids_needed = 2 - assignments.filter {|assignment| assignment.age == 'child'}.length
+    adults_needed = 2 - assignments.filter {|assignment| assignment.age == 'adult'}.length
 
-    unnasigned = self.not_in_family(family).unassigned
-    assignments << unassigned.only_children.shuffle.take(kids_needed)
-    assignments << unassigned.only_adults.shuffle.take(adults_needed)
+    assignments << self.not_in_family(family).unassigned.only_children.shuffle.take(kids_needed)
+    assignments << self.not_in_family(family).unassigned.only_adults.shuffle.take(adults_needed)
     assignments.flatten!
       
 
@@ -34,9 +33,4 @@ class Assignment < ApplicationRecord
 
     return assignments
   end
-
-  private
-    def self.filter_age(assignments, age)
-      assignments.filter {|assignment| assignment.age == age} 
-    end
 end
